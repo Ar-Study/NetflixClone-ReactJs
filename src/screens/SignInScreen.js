@@ -1,4 +1,9 @@
+import { async } from "@firebase/util";
 import userEvent from "@testing-library/user-event";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import React from "react";
 import { useRef } from "react";
 import { auth } from "../firebase";
@@ -8,24 +13,34 @@ function SignInScreen() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
-  const register = (e) => {
+  const register = async (e) => {
     e.preventDefault();
 
-    auth
-      .createUserWithEmailAndPassword(
+    try {
+      const authUser = await createUserWithEmailAndPassword(
+        auth,
         emailRef.current.value,
         passwordRef.current.value
-      )
-      .then((authUser) => {
-        console.log(authUser);
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+      );
+      console.log(authUser);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
-  const signin = (e) => {
+  const signin = async (e) => {
     e.preventDefault();
+
+    try {
+      const authUser = await signInWithEmailAndPassword(
+        auth,
+        emailRef.current.value,
+        passwordRef.current.value
+      );
+      console.log(authUser);
+    } catch (error) {
+      alert(error.message);
+    }
   };
   return (
     <div className="signinScreen">
@@ -33,11 +48,15 @@ function SignInScreen() {
         <h1>Sign In</h1>
         <input ref={emailRef} type="email" placeholder="Email Address" />
         <input ref={passwordRef} type="password" placeholder="Password" />
-        <button type="submit">Sign In </button>
+        <button type="submit" onClick={signin}>
+          Sign In{" "}
+        </button>
 
         <h4>
           <span className="signinScreen__gray">New to Netflix?</span>
-          <span className="signinScreen__link">Sign up now.</span>
+          <span className="signinScreen__link" onClick={register}>
+            Sign up now.
+          </span>
         </h4>
       </form>
     </div>
