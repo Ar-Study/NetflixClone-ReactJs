@@ -7,6 +7,7 @@ import { login, logout, selectUser } from "./features/userSlice";
 import { auth } from "./firebase";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 function App() {
   const user = useSelector(selectUser);
@@ -22,14 +23,14 @@ function App() {
             email: userAuth.email,
           })
         );
-        console.log(userAuth);
+        // console.log(userAuth);
       } else {
         // Logged Out
-        dispatch(logout);
+        dispatch(logout());
       }
       return unsubscribe;
     });
-  }, []);
+  }, [dispatch]);
   return (
     <div className="app">
       <Router>
@@ -46,6 +47,7 @@ function App() {
         ) : (
           <Routes>
             <Route exact path="/" element={<HomeScreen />} />
+            <Route exact path="/profile" element={<ProfileScreen />} />
           </Routes>
         )}
       </Router>
